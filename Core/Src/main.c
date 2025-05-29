@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dac.h"
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
@@ -97,11 +98,13 @@ int main(void)
   MX_ADC1_Init();
   MX_USART1_UART_Init();
   MX_TIM2_Init();
+  MX_DAC_Init();
   /* USER CODE BEGIN 2 */
 	printf("Phase Locked Amplifier.");
 	//开启DMA、PWM
 	HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&adc_buffer,ADC_BUFFER_LENGTH);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t *)adc_buffer, sizeof(adc_buffer), DAC_ALIGN_8B_R);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -176,6 +179,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
 	}
 }
+void HAL_DAC_ConvCpltCallbackCh1(DAC_HandleTypeDef* hdac)
+{
+    printf("DAC DMA 传输完成\r\n");
+}
+
 /* USER CODE END 4 */
 
 /**
