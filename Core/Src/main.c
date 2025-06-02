@@ -37,7 +37,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define ADC_BUFFER_LENGTH 10
+#define ADC_BUFFER_LENGTH 100
 
 uint16_t adc_buffer[ADC_BUFFER_LENGTH] ;
 float adc_voltage;
@@ -101,10 +101,10 @@ int main(void)
   MX_DAC_Init();
   /* USER CODE BEGIN 2 */
 	printf("Phase Locked Amplifier.");
-	//开启DMA、PWM
+	//开启ADC+DMA、DAC+DMA、PWM
 	HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&adc_buffer,ADC_BUFFER_LENGTH);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t *)adc_buffer, sizeof(adc_buffer), DAC_ALIGN_8B_R);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -169,6 +169,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
 	if (hadc->Instance == ADC1)
 	{
+		/*
 		 printf("DMA 采样完成，数据如下：\r\n");
     for (int i = 0; i < ADC_BUFFER_LENGTH; i++)
     {
@@ -176,7 +177,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
      printf("ADC  %d  %f\r\n",adc_buffer[i],adc_voltage);
     }
     printf("\r\n");
-
+*/
 	}
 }
 void HAL_DAC_ConvCpltCallbackCh1(DAC_HandleTypeDef* hdac)
